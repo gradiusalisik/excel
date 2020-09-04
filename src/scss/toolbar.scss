@@ -1,0 +1,18 @@
+@import 'variables';
+@import 'mixins';
+
+.toolbar {
+  position: absolute;
+  top: $header-height;
+  left: 0;
+  right: 0;
+  padding: 7px 10px;
+  display: flex;
+  height: $toolbar-height;
+  border-top: 1px solid $border-color;
+  border-bottom: 1px solid $border-color;
+
+  &__button {
+    @include button(green);
+  }
+}
