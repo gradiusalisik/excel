@@ -28,6 +28,7 @@
     border: 1px solid $border-color;
     background-color: #f8f9fa;
     border-top: none;
+    user-select: none;
   }
 
   &__row-data {
@@ -47,6 +48,7 @@
     border: 1px solid $border-color;
     border-top: none;
     border-left: none;
+    user-select: none;
   }
 
   &__cell {
@@ -71,6 +73,7 @@
   &__col-resize,
   &__row-resize {
     position: absolute;
+    z-index: 1000;
     bottom: 0;
     right: 0;
     opacity: 0;
