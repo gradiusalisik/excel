@@ -19,6 +19,7 @@
   }
 
   &__row-info {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -27,6 +28,7 @@
     border: 1px solid $border-color;
     background-color: #f8f9fa;
     border-top: none;
+    user-select: none;
   }
 
   &__row-data {
@@ -35,6 +37,7 @@
   }
 
   &__column {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -45,6 +48,7 @@
     border: 1px solid $border-color;
     border-top: none;
     border-left: none;
+    user-select: none;
   }
 
   &__cell {
@@ -61,8 +65,41 @@
 
     &_selected {
       z-index: 2;
-      outline: 2px solid #3c74ff;
+      outline: 2px solid $primary-color;
       border: none;
+    }
+  }
+
+  &__col-resize,
+  &__row-resize {
+    position: absolute;
+    z-index: 1000;
+    bottom: 0;
+    right: 0;
+    opacity: 0;
+    background-color: $primary-color;
+    transition: opacity 0.3s;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  &__col-resize {
+    top: 0;
+    width: 4px;
+
+    &:hover {
+      cursor: col-resize;
+    }
+  }
+
+  &__row-resize {
+    left: 0;
+    height: 4px;
+
+    &:hover {
+      cursor: row-resize;
     }
   }
 
