@@ -10,6 +10,7 @@
   height: $header-height;
   display: flex;
   justify-content: space-between;
+  user-select: none;
 
   &__input {
     margin: 0;
@@ -22,6 +23,7 @@
     color: #000;
     border: 1px solid transparent;
     border-radius: 2px;
+    user-select: none;
 
 
     &:hover {
