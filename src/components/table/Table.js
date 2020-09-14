@@ -10,6 +10,7 @@ export class Table extends ExcelComponent {
   constructor($root) {
     super($root, {
       listeners: ['mousedown'],
+      listeners: ['mousedown', 'keyup'],
     })
   }
 
@@ -41,4 +42,46 @@ export class Table extends ExcelComponent {
       }
     }
   }
+  onKeyup(event) {
+    const $target = this.selection.current;
+    const {col, row} = $target.id(true);
+
+    switch (event.key) {
+      case 'ArrowRight':
+      case 'Tab': {
+        const cell = normalizeCell(col, 1)
+        nextSelected(this.$root, this.selection, row, cell);
+        break;
+      }
+      case 'ArrowLeft': {
+        const cell = normalizeCell(col, -1)
+        nextSelected(this.$root, this.selection, row, cell);
+        break;
+      }
+      case 'ArrowDown':
+      case 'Enter': {
+        const cell = normalizeCell(row, 1)
+        nextSelected(this.$root, this.selection, cell, col);
+        break;
+      }
+      case 'ArrowUp': {
+        const cell = normalizeCell(row, -1)
+        nextSelected(this.$root, this.selection, cell, col);
+        break;
+      }
+      default:
+        break;
+    }
+  }
+}
+
+function normalizeCell(cell, step) {
+  const result = cell + step;
+  return result < 0 ? 0 : result;
+}
+
+function nextSelected($root, selection, row, col) {
+  const $nextTarget = $root.
+      find(`[data-id="${row}:${col}"]`);
+  selection.select($nextTarget);
 }
