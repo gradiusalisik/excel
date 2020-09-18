@@ -1,17 +1,17 @@
-import {getPositionCell, getPosition} from './table.functions';
+// import {getPositionCell, getPosition} from './table.functions';
 
 export class TableSelection {
   static className = 'table__cell_selected';
-  constructor($root) {
-    this.$root = $root;
+  constructor() {
     this.group = [];
+    this.current = null
   }
 
-  // $el instanceof DOM === true
   select($el) {
-    // this.clear();
+    this.clear();
+    $el.focus().addClass(TableSelection.className);
     this.group.push($el);
-    $el.addClass(TableSelection.className);
+    this.current = $el;
   }
 
   clear() {
@@ -19,23 +19,10 @@ export class TableSelection {
     this.group = [];
   }
 
-  selectGroup(event) {
-    const start = getPositionCell(event);
-    document.onmouseup = e => {
-      const end = getPositionCell(e);
-      const {row, col} = getPosition(start, end)
+  selectGroup($group = []) {
+    this.clear();
+    this.group = $group;
 
-      for (let i = row.startRow; i <= row.endRow; i++) {
-        for (let j = col.startCol; j <= col.endCol; j++) {
-          const $target = this.$root.find(`[data-id="${i}:${j}"]`)
-          this.select($target);
-        }
-      }
-
-      // this.group.forEach($el => $el.addClass(TableSelection.className));
-
-      document.onmouseup = null;
-    }
-    console.log('iPressShift')
+    this.group.forEach($el => $el.addClass(TableSelection.className));
   }
 }

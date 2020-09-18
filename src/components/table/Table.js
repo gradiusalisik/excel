@@ -2,16 +2,16 @@ import {ExcelComponent} from '@core/ExcelComponent';
 import {$} from '@core/dom';
 import {createTable} from './table.template';
 import {resizeHandler} from './table.resize';
-import {isCell, isShiftPressed, shouldResize} from './table.functions';
+import {isCell, shouldResize, matrix, nextSelector} from './table.functions';
 import {TableSelection} from './TableSelection';
 
 export class Table extends ExcelComponent {
   static className = 'table';
-  constructor($root) {
+  constructor($root, options) {
     super($root, {
-      listeners: ['mousedown'],
-      listeners: ['mousedown', 'keyup'],
+      name: 'Table',
       listeners: ['mousedown', 'keydown', 'input'],
+      ...options
     })
   }
 
@@ -27,70 +27,61 @@ export class Table extends ExcelComponent {
     super.init();
 
     const $cell = this.$root.find('[data-id="0:0"]');
-    this.selection.select($cell);
-    this.$on('formula:inputEnter', () => {
+    this.selectCell($cell);
+
+    this.$on('formula:input', text => {
+      this.selection.current.text(text);
+    })
+
+    this.$on('formula:done', () => {
       this.selection.current.focus()
     })
   }
 
   onInput(event) {
-    const text = event.target.textContent.trim();
-    console.log(event, 'contenteditable')
-    this.$emit('table:input', text);
+    this.$emit('table:input', $(event.target).text());
   }
+
+  selectCell($cell) {
+    this.selection.select($cell);
+    this.$emit('table:select', $cell);
+  }
+
   onMousedown(event) {
-    console.log(event.target)
     if (shouldResize(event)) {
       resizeHandler(this.$root, event);
     } else if (isCell(event)) {
       const $target = $(event.target);
-      this.selection.clear();
-      this.selection.select($target);
-      if (isShiftPressed(event)) {
-        this.selection.selectGroup(event);
+      if (event.shiftKey) {
+        const $cells = matrix($target, this.selection.current)
+            .map(id => this.$root.find(`[data-id="${id}"]`));
+
+        this.selection.selectGroup($cells);
+      } else {
+        this.selection.clear();
+        this.selection.select($target);
       }
     }
   }
-  onKeyup(event) {
-    const $target = this.selection.current;
-    const {col, row} = $target.id(true);
 
-    switch (event.key) {
-      case 'ArrowRight':
-      case 'Tab': {
-        const cell = normalizeCell(col, 1)
-        nextSelected(this.$root, this.selection, row, cell);
-        break;
-      }
-      case 'ArrowLeft': {
-        const cell = normalizeCell(col, -1)
-        nextSelected(this.$root, this.selection, row, cell);
-        break;
-      }
-      case 'ArrowDown':
-      case 'Enter': {
-        const cell = normalizeCell(row, 1)
-        nextSelected(this.$root, this.selection, cell, col);
-        break;
-      }
-      case 'ArrowUp': {
-        const cell = normalizeCell(row, -1)
-        nextSelected(this.$root, this.selection, cell, col);
-        break;
-      }
-      default:
-        break;
+  onKeydown(event) {
+    const keys = [
+      'Enter',
+      'Tab',
+      'ArrowLeft',
+      'ArrowRight',
+      'ArrowDown',
+      'ArrowUp',
+    ];
+
+    const {key} = event;
+
+    if (keys.includes(key) && !event.shiftKey) {
+      event.preventDefault();
+      const id = this.selection.current.id(true);
+      const $next = this.$root.find(nextSelector(key, id));
+      this.selectCell($next);
     }
   }
 }
 
-function normalizeCell(cell, step) {
-  const result = cell + step;
-  return result < 0 ? 0 : result;
-}
-
-function nextSelected($root, selection, row, col) {
-  const $nextTarget = $root.
-      find(`[data-id="${row}:${col}"]`);
-  selection.select($nextTarget);
-}
