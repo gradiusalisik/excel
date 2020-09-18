@@ -11,6 +11,7 @@ export class Table extends ExcelComponent {
     super($root, {
       listeners: ['mousedown'],
       listeners: ['mousedown', 'keyup'],
+      listeners: ['mousedown', 'keydown', 'input'],
     })
   }
 
@@ -27,8 +28,16 @@ export class Table extends ExcelComponent {
 
     const $cell = this.$root.find('[data-id="0:0"]');
     this.selection.select($cell);
+    this.$on('formula:inputEnter', () => {
+      this.selection.current.focus()
+    })
   }
 
+  onInput(event) {
+    const text = event.target.textContent.trim();
+    console.log(event, 'contenteditable')
+    this.$emit('table:input', text);
+  }
   onMousedown(event) {
     console.log(event.target)
     if (shouldResize(event)) {

@@ -14,6 +14,13 @@ class Dom {
     return this.$el.outerHTML.trim();
   }
 
+  text(text) {
+    if (typeof text === 'string') {
+      this.$el.textContent = text;
+      return this;
+    }
+    return this.$el.outerHTML.trim();
+  }
   clear() {
     this.html('');
     return this;

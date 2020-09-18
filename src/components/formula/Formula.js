@@ -7,6 +7,7 @@ export class Formula extends ExcelComponent {
     super($root, {
       name: 'Formula',
       listeners: ['input', 'click']
+      listeners: ['input', 'keyup'],
     });
   }
 
@@ -14,14 +15,28 @@ export class Formula extends ExcelComponent {
     return `
       <div class="formula__info">fx</div>
       <div class="formula__input" contenteditable spellcheck="false"></div>
+      <div class="formula__input"
+        contenteditable spellcheck="false" data-type='formula'></div>
     `
   }
 
   onInput(event) {
     console.log('Formula: onInput', event.target.textContent.trim());
+  onKeyup(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.$emit('formula:inputEnter')
+    }
   }
 
   onClick() {
     console.log('onclick')
+  init() {
+    super.init();
+
+    this.$on('table:input', text => {
+      const $elInput = $(this.$root.$el).find('[data-type="formula"]')
+      $elInput.text(text);
+    })
   }
 }
