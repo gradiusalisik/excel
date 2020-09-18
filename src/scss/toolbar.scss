@@ -11,7 +11,7 @@
   height: $toolbar-height;
   border-top: 1px solid $border-color;
   border-bottom: 1px solid $border-color;
-
+  user-select: none;
   &__button {
     @include button(green);
   }

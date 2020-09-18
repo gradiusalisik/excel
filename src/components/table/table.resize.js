@@ -2,14 +2,12 @@ import {$} from '@core/dom';
 
 export function resizeHandler($root, event) {
   const $resizer = $(event.target);
-  const type = $resizer.data.resize;
   const $parent = $resizer.closest('[data-type="resizable"]')
   const coords = $parent.getCoords();
-
-  const index = $parent.data.col;
-  const cells = $root.findAll(`[data-col="${index}"]`);
-  let value;
+  const type = $resizer.data.resize;
   const position = type === 'col' ? 'bottom' : 'right';
+
+  let value;
 
   $resizer.css({
     opacity: 1,
@@ -33,19 +31,18 @@ export function resizeHandler($root, event) {
   }
 
   document.onmouseup = () => {
+    document.onmousemove = null;
+    document.onmouseup = null;
+
     if (type === 'col') {
-      cells.forEach((elem) => {
-        $(elem).css({
-          width: `${value}px`
-        })
-      })
+      $parent.css({width: `${value}px`})
+      $root.findAll(`[data-col="${$parent.data.col}"]`)
+          .forEach((elem) => $(elem).css({width: `${value}px`}));
     } else {
       $parent.css({
         height: `${value}px`
       })
     }
     $resizer.css({opacity: '', bottom: '', right: ''});
-    document.onmousemove = null;
-    document.onmouseup = null;
   }
 }
