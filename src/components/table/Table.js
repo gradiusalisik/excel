@@ -36,6 +36,22 @@ export class Table extends ExcelComponent {
     this.$on('formula:done', () => {
       this.selection.current.focus()
     })
+    // get ColState
+    // const {colState} = this.$getState();
+    // const keys = Object.keys(colState);
+    // this.$root.findAll(`[data-col]`).forEach(col => {
+    //   const id = $(col).data.col;
+    //   if (keys.includes(id)) {
+    //     console.log(colState[id], 'colSTate')
+    //     $(col).css({
+    //       width: `${colState[id]}px`
+    //     })
+    //   }
+    // })
+
+    // this.$subscribe(({colState}) => {
+
+    // })
   }
 
   onInput(event) {
