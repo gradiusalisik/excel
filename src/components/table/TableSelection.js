@@ -1,5 +1,3 @@
-// import {getPositionCell, getPosition} from './table.functions';
-
 export class TableSelection {
   static className = 'table__cell_selected';
   constructor() {
@@ -19,10 +17,18 @@ export class TableSelection {
     this.group = [];
   }
 
+  get selectedIds() {
+    return this.group.map($el => $el.id());
+  }
+
   selectGroup($group = []) {
     this.clear();
     this.group = $group;
 
     this.group.forEach($el => $el.addClass(TableSelection.className));
+  }
+
+  applyStyle(style) {
+    this.group.forEach($el => $el.css(style));
   }
 }
