@@ -14,6 +14,7 @@ export class Emitter {
     this.listeners[event].forEach(listener => {
       listener(...args);
     })
+    return true;
   }
 
   // on, listen
@@ -26,7 +27,7 @@ export class Emitter {
 
     return () => {
       this.listeners[event] =
-      this.listeners[event].filter(listener => listener !== fn);
+        this.listeners[event].filter(listener => listener !== fn);
     }
   }
 }
